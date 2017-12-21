@@ -48,10 +48,6 @@ echo "Installing WEB Server"
 yum install httpd httpd-devel gcc -y &>>$LOG
 VALIDATE $? "Installing HTTPD"
 
-systemctl enable httpd &>>$LOG
-systemctl start httpd  &>>$LOG
-VALIDATE $? "Starting HTTPD"
-
 if [ -f /opt/$CONN_TAR_FILE ]; then 
 	SKIP "Downloadng MOD-JK" 
 else
@@ -75,6 +71,26 @@ else
 	VALIDATE $? "Compiling MOD-JK"
 fi
 
+echo 'LoadModule jk_module modules/mod_jk.so
+JkWorkersFile conf.d/workers.properties
+JkLogFile logs/mod_jk.log
+JkLogLevel info
+JkLogStampFormat "[%a %b %d %H:%M:%S %Y]"
+JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
+JkRequestLogFormat "%w %V %T"
+JkMount /student tomcatA
+JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf 
+
+echo '### Define workers
+worker.list=tomcatA
+### Set properties
+worker.tomcatA.type=ajp13
+worker.tomcatA.host=localhost
+worker.tomcatA.port=8009' >/etc/httpd/conf.d/workers.properties
+
+systemctl enable httpd &>>$LOG
+systemctl restart httpd  &>>$LOG
+VALIDATE $? "Starting HTTPD"
 
 
 echo -e "\nInstalling APP Server"	
