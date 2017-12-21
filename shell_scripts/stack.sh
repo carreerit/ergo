@@ -129,6 +129,8 @@ VALIDATE $? "Downloading WAR File"
 sed -i -e '/TestDB/ d' /opt/$TOMCAT_TAR_DIR/conf/context.xml 
 sed -i -e '$ i <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/studentapp"/>' /opt/$TOMCAT_TAR_DIR/conf/context.xml 
 
+/opt/$TOMCAT_TAR_DIR/bin/startup.sh  &>>$LOG 
+VALIDATE $? "Starting Tomcat"
 
 echo -e "\nInstalling DB Server"
 
