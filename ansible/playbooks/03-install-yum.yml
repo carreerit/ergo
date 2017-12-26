@@ -1,0 +1,8 @@
+- hosts: DEV
+  become: yes
+  tasks:
+    - name: Install Web Server
+      #become: yes   ## become can be task level or play level 
+      yum:
+        name: httpd
+        state: installed 
