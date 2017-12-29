@@ -1,0 +1,9 @@
+- name: Demo vars_files
+  hosts: DEV
+  vars_files:
+    - vars-exp.yml
+  tasks:
+    - name: Print some 
+      debug:
+        msg: "Course = {{NAME}}, Duration = {{DURATION}}"
+        

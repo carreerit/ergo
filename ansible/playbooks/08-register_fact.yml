@@ -1,0 +1,10 @@
+- name: Register a fact 
+  hosts: DEV
+  tasks:
+    - name: Run some command
+      shell: ls /tmp
+      register: out
+
+    - name: Print output
+      debug:
+        msg: "{{out.stdout}}"

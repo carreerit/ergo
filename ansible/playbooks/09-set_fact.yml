@@ -1,0 +1,15 @@
+- name: Demo set facts
+  hosts: DEV
+  tasks:
+    - name: Run id command
+      shell: id -u 
+      register: out
+
+
+    - name: Define UID of the user
+      set_fact:
+        USER_UID : "{{out.stdout}}"
+
+    - name: print facts  
+      debug:
+        msg: "Hell, Your UID = {{USER_UID}}"

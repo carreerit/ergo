@@ -1,0 +1,9 @@
+- name: Demo vars_prompt
+  hosts: DEV
+  vars_prompt:
+    name: NAME 
+    prompt: What is your name 
+    private: no
+  tasks:
+    - debug:
+        msg: "Hello , {{NAME}}"

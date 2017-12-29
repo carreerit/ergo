@@ -1,2 +1,5 @@
 [DEV]
 stu-dev-app01
+
+[DEV:vars]
+NAME=GROUPS

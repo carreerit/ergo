@@ -1,0 +1,10 @@
+- hosts: DEV
+  become: yes
+  tasks:
+    - name: Update Packages
+      with_items:
+        - { name: 'httpd' , state: 'installed' }
+        - { name: 'httpd-devel', state: 'absent' }
+      yum:
+        name: "{{item.name}}"
+        state: "{{item.state}}"

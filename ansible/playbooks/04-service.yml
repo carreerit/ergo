@@ -1,0 +1,8 @@
+- name: Show service module
+  hosts: DEV
+  become: yes
+  tasks:
+    - name: Start httpd service
+      service:
+        name: httpd
+        state: started

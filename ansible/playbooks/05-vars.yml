@@ -1,0 +1,20 @@
+- name: Demo vars 
+  hosts: DEV
+  vars:
+    NAME : DevOps
+    pack_name: httpd
+  tasks:
+    - name: Print facts
+      debug:
+        msg: "Name = {{NAME}}"
+
+    - name: Define fact at task level
+      vars: 
+        NAME : DevOps_Task
+      debug:
+        msg: "Name = {{NAME}}"
+
+    - name: Install web server
+      yum:
+        name: "{{pack_name}}"
+        state: installed

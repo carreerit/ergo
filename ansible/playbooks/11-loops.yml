@@ -1,0 +1,11 @@
+- hosts: DEV
+  tasks:
+    - debug:
+        msg: "Hello , {{item}}"
+      with_items:
+        - Rama
+        - Rahim
+
+    - debug:
+        msg: "Hello , {{item}}"
+      with_items: ['Rama', 'Rahim']  

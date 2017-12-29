@@ -1,0 +1,19 @@
+- hosts: DEV
+  become: yes
+  vars:
+    gnames: ['demo','sales']
+    unames: ['raju', 'rama', 'rahim']
+  tasks:
+    - name: Add groups
+      group:
+        name: "{{item}}"
+        state: present
+      with_items: "{{gnames}}"
+
+    - name: Add users
+      user:
+        name: "{{item[0]}}"
+        groups: "{{gnames}}"
+      with_nested:
+        - "{{unames}}"
+        - "{{gnames}}"

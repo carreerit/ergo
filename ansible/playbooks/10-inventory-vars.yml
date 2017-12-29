@@ -1,0 +1,8 @@
+- name: Print facts of inventory 
+  hosts: DEV
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "Hello, {{NAME}}"
+    - debug:
+        msg: "Hostname = {{ansible_hostname}}"
