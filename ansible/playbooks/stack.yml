@@ -2,8 +2,18 @@
   hosts: DEV
   become: yes
   gather_facts: yes
+  vars:
+    TOMCON_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
 
   tasks:
+    - name: Get tomcat-connectors Dir 
+      shell: echo "{{TOMCON_URL}}" | awk -F / '{print $NF}' | sed -e 's/.tar.gz//'
+      register: out
+
+    - name: Define tomcat-donnectors dir variable
+      set_fact:
+        TOMCON_DIR: "{{out.stdout}}"
+
     - name: Install Web Server
       yum:
         name: "{{item}}"
@@ -18,18 +28,24 @@
       #  url: http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz
       #  dest: /root/tomcat-connectors-1.2.42-src.tar.gz
       unarchive:
-        src: http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz
+        src: "{{TOMCON_URL}}"
         dest: /root
         remote_src: yes
+
+    - name: Check mod_jk.so file
+      stat:
+        path: /etc/httpd/modules/mod_jk.so 
+      register: out
 
     - name: Compile mod_jk
       shell: "{{item}}"
       args:
-        chdir: /root/tomcat-connectors-1.2.42-src/native
+        chdir: /root/{{TOMCON_DIR}}/native
       with_items:
         - "./configure --with-apxs=/bin/apxs"
         - make 
         - make install
+      when: out.stat.exists == false
 
     - name: Create workers.properties file
       blockinfile:
@@ -60,3 +76,47 @@
       service: 
         name: httpd
         state: restarted
+
+- name: Create APP Layer to Stack
+  hosts: DEV
+  become: yes
+  vars:
+    TOMCAT_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz"
+    USERNAME: student
+    TOMCAT_DIR: /tomcat
+
+  tasks:
+    - name: Get tomcat- Dir 
+      shell: echo "{{TOMCAT_URL}}" | awk -F / '{print $NF}' | sed -e 's/.tar.gz//'
+      register: out
+
+    - name: Define tomcat dir variable
+      set_fact:
+        TOMCAT_TAR_DIR: "{{out.stdout}}"
+
+    - name: Install Java
+      yum: 
+        name: java 
+        state: installed
+
+    - name: Create {{USERNAME}} user 
+      user:
+        name: "{{USERNAME}}"
+
+    - name: Create project directory 
+      file:
+        path: "{{TOMCAT_DIR}}" 
+        state: directory 
+        mode: 0755
+        owner: "{{USERNAME}}"
+        group: "{{USERNAME}}"
+      
+    - name: Download and extract tomcat 
+      unarchive:
+        src: "{{TOMCAT_URL}}"
+        dest: "{{TOMCAT_DIR}}"
+        remote_src: yes
+      become_user:  "{{USERNAME}}"
+
+    - name: Remove old webapps
+      shell: rm -rf "{{TOMCAT_DIR}}"/"TOMCAT_TAR_DIR"/webapps/*

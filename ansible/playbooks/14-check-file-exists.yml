@@ -1,0 +1,15 @@
+- hosts: DEV
+  tasks: 
+    - name: Check a file exists or not
+      stat:
+        path: /etc/passwd123
+      register: out
+
+    - name: print output
+      debug:
+        msg: "{{out}}"
+
+    - name: task to skip
+      debug:
+        msg: "File does not exist"
+      when: out.stat.exists == false

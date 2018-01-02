@@ -1,0 +1,18 @@
+- hosts: DEV
+  tasks:
+    - name: Fail this command
+      shell: /bin/true
+      ignore_errors: True
+      register: out
+
+    - name: Print some output
+      debug:
+        msg: "Hello, Success"
+      #when: out.rc == 0
+      when: out|succeeded
+
+    - name: Print some output
+      debug:
+        msg: "Hello, Failure"
+      #when: out.rc == 1
+      when: out|failed
