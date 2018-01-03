@@ -1,0 +1,14 @@
+- name: Test hash variables
+  hosts: DEV
+  become: yes
+  vars:
+    WAR_URL: 
+      URL: https://github.com/carreerit/ergo/raw/master/APPSTACK/student.war
+      LOC: "/webapps"
+    JDBC_URL: 
+      URL: https://github.com/carreerit/cogito/raw/master/appstack/mysql-connector-java-5.1.40.jar
+      LOC: "/lib"
+
+  tasks:
+    - debug:
+        msg: "{{WAR_URL.URL}}"

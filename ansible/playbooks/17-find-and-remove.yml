@@ -1,0 +1,19 @@
+- hosts: DEV
+  become: yes
+  tasks:
+    - name: find the files
+      find: 
+        paths: /tmp/demo
+        #patterns: '*.log'
+        file_type: any
+      register: out
+
+    - name: list files
+      debug:
+        msg: "{{out}}"
+
+    - name: Remove files
+      file:
+        path: "{{item.path}}"
+        state: absent
+      with_items: "{{out.files}}"      
