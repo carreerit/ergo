@@ -1,6 +1,8 @@
 - name: Create Web Layer in Stack
   hosts: DEV
   become: yes
+  tags:
+    - WEB
   gather_facts: yes
   vars:
     TOMCON_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
@@ -80,6 +82,8 @@
 - name: Create APP Layer to Stack
   hosts: DEV
   become: yes
+  tags:
+    - APP
   vars:
     TOMCAT_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz"
     USERNAME: student
@@ -162,3 +166,34 @@
     - name: Restart Tomcat 
       shell: "nohup sh {{TOMCAT_DIR}}/{{TOMCAT_TAR_DIR}}/bin/shutdown.sh && nohup sh {{TOMCAT_DIR}}/{{TOMCAT_TAR_DIR}}/bin/startup.sh"
       when: out.rc == 0
+
+- name: Create DB Layer to Stack
+  hosts: DEV
+  become: yes
+  tags:
+    - DB
+  tasks:
+    - name: Install MariaDB
+      yum:
+        name: "{{item}}"
+        state: installed
+      with_items:
+        - mariadb
+        - mariadb-server
+        - MySQL-python
+
+    - name: Start the DB Service 
+      service:
+        name: mariadb 
+        state: started
+
+    - name: Copy sql file 
+      copy:
+        src: files/studentapp.sql
+        dest: /tmp/studentapp.sql 
+
+    - name: Import sql file 
+      mysql_db:
+        state: import
+        name: all
+        target: /tmp/studentapp.sql 

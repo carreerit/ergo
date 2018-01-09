@@ -1,0 +1,18 @@
+- hosts: DEV
+  become: yes
+  tasks:
+    - name: Install web server
+      yum: 
+        name: httpd
+        state: installed
+      notify: Restart httpd
+
+    - name: debug
+      debug:
+        msg:
+
+  handlers:
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted

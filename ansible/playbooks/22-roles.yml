@@ -1,0 +1,4 @@
+- hosts: DEV
+  become: yes
+  roles:
+    - demo

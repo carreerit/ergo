@@ -1,0 +1,15 @@
+- name: demo on play1 
+  hosts: DEV
+  tags:
+    - DEV
+  tasks:
+    - debug:
+        msg: "Hello from DEV"
+
+- name: demo on play2
+  hosts: DEV
+  tags:
+    - PROD
+  tasks:
+    - debug:
+        msg: "Hello from PROD"

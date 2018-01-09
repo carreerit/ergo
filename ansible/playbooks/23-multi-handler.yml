@@ -1,0 +1,15 @@
+- hosts: DEV
+  tasks:
+    - shell: /bin/ls
+      notify: 
+        - LS
+        - DIR 
+
+  handlers:
+    - name: LS 
+      debug:
+        msg: Hello LS 
+
+    - name: DIR
+      debug:
+        msg: Hello DIR
