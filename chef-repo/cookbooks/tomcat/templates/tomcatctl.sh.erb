@@ -1,0 +1,33 @@
+#!/bin/bash
+
+TOMCAT_LOC=<%= node['tomcat']['TAR_DIR'] %>
+
+START() {
+   ps -ef | grep java |grep "$TOMCAT_LOC" | grep -v grep &>/dev/null
+   if [ $? -eq 0 ]; then 
+	echo "TOmcat already started"
+	return
+   fi
+   nohup sh $TOMCAT_LOC/bin/startup.sh &>/dev/null
+}
+
+STOP() {
+   ps -ef | grep java | grep "$TOMCAT_LOC" | grep -v grep &>/dev/null
+   if [ $? -ne 0 ]; then
+        echo "TOmcat already stopped"
+        return
+   fi
+   sh $TOMCAT_LOC/bin/shutdown.sh  &>/dev/null
+}
+
+RESTART() {
+	STOP
+	sleep 5
+	START
+}
+
+case $1 in 
+  start) START ;;
+  stop)  STOP ;;
+  restart) RESTART ;;
+esac
