@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rc1
+spec:
+  replicas: 3 
+  selector:
+    app: sample
+  template:
+    metadata: 
+      name: rc1
+      labels:
+        app: sample
+    spec:
+      containers:
+        - name: mywebserver
+          image: careerit/k-webserver
+          ports:
+            - containerPort: 80

@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: sample-tomcat
+    spec:
+      containers:
+        - name: mytomcat
+          image: careerit/k-tomcat:v2
+          ports:
+            - containerPort: 8080

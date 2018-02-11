@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod3
+spec:
+  containers:
+  - name: mywebserver 
+    image: careerit/k-webserver
+    resources:
+      limits:
+        memory: "128Mi"
+  - name: mytomcat
+    image: careerit/k-tomcat
+    resources:
+      limits:
+        memory: "128Mi"
